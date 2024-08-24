@@ -1,6 +1,6 @@
 from django.utils import timezone
 from django.http import HttpResponse, JsonResponse
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, action
 from rest_framework.generics import GenericAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.pagination import PageNumberPagination, CursorPagination
 from rest_framework.response import Response
@@ -8,8 +8,11 @@ from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
+
 from .models import *
-from .serializers import TaskSerializer, SubTaskCreateSerializer, TaskCreateSerializer, TaskDetailSerializer
+from .serializers import TaskSerializer, SubTaskCreateSerializer, TaskCreateSerializer, TaskDetailSerializer, \
+    CategoryCreateSerializer
 from django.db.models import Count
 
 
@@ -138,6 +141,24 @@ class SubTaskListCreateAPIView(ListCreateAPIView):
 class SubTaskRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     queryset = SubTask.objects.all()
     serializer_class = SubTaskCreateSerializer
+
+
+class CategoryViewSet(ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategoryCreateSerializer
+
+    @action(detail=False, methods=['get'])
+    def count_tasks(self, request):
+        category_task_counts = Category.objects.annotate(task_count=Count('tasks'))
+        data = [
+            {
+                "id": category.id,
+                "category": category.name,
+                "task_count": category.task_count
+            }
+            for category in category_task_counts
+        ]
+        return Response(data)
 
 
 
