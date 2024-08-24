@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=100, verbose_name='Название категории')
+    name = models.CharField(max_length=100, unique=True, verbose_name='Название категории')
 
     def __str__(self):
         return f'{self.name}'
@@ -22,7 +22,7 @@ class Task(models.Model):
         ('Blocked', 'Blocked'),
         ('Done', 'Done'),
     ]
-    title = models.CharField(max_length=100, verbose_name='Название задачи', unique_for_date='created_at')
+    title = models.CharField(max_length=100, unique=True, verbose_name='Название задачи')#unigue_for_date='created_at'
     description = models.TextField(null=True, blank=True, verbose_name='Описание задачи')
     categories = models.ManyToManyField('Category', related_name='tasks', verbose_name='Категории задачи')
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, verbose_name='Статус задачи')
@@ -47,7 +47,7 @@ class SubTask(models.Model):
         ('Blocked', 'Blocked'),
         ('Done', 'Done'),
     ]
-    title = models.CharField(max_length=100, verbose_name='Название подзадачи')
+    title = models.CharField(max_length=100, unique=True, verbose_name='Название подзадачи')
     description = models.TextField(null=True, blank=True, verbose_name='Описание подзадачи')
     task = models.ForeignKey('Task', related_name='subtasks', on_delete=models.CASCADE, verbose_name='Основная задача')
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, verbose_name='Статус задачи')
