@@ -25,6 +25,7 @@ Env.read_env(BASE_DIR / '.env')
 
 # SECURITY WARNING: keep the secret key used in production secret!
 from environ import Env
+from datetime import timedelta
 
 SECRET_KEY = env('SECRET_KEY')
 
@@ -36,6 +37,20 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS':
         'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 5,
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=2),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
 
@@ -51,6 +66,7 @@ INSTALLED_APPS = [
     'first_app.apps.FirstAppConfig',
     'rest_framework',
     'django_filters',
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -61,6 +77,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'first_app.middleware.JWTAuthenticationMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
