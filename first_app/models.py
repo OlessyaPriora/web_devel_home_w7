@@ -1,4 +1,5 @@
 from django.db import models
+from rest_framework.authtoken.admin import User
 
 
 class Category(models.Model):
@@ -28,6 +29,7 @@ class Task(models.Model):
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, verbose_name='Статус задачи')
     deadline = models.DateTimeField(verbose_name='Дата и время дедлайн')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата и время создания')
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tasks', null=True, blank=True)
 
     def __str__(self):
         return f'{self.title}'
@@ -53,6 +55,7 @@ class SubTask(models.Model):
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, verbose_name='Статус задачи')
     deadline = models.DateTimeField(verbose_name='Дата и время дедлайн')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата и время создания')
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subtasks', null=True, blank=True)
 
     def __str__(self):
         return f'{self.title}'

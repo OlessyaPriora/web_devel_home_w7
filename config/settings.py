@@ -65,7 +65,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'first_app.apps.FirstAppConfig',
     'rest_framework',
+    'drf_yasg',
     'django_filters',
+    'rest_framework.authtoken',
     'rest_framework_simplejwt',
 ]
 

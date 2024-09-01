@@ -6,7 +6,7 @@ from django.utils import timezone
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
-        fields = ['title', 'description', 'status', 'deadline']
+        fields = ['id', 'title', 'description', 'status', 'deadline']
 
 
 class SubTaskCreateSerializer(serializers.ModelSerializer):
@@ -15,6 +15,7 @@ class SubTaskCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubTask
         fields = '__all__'
+        read_only_fields = ['owner']
         # read_only_fields = ['created_at']
 
 
@@ -48,6 +49,7 @@ class TaskCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         exclude = ['created_at']
+        read_only_fields = ['owner']
 
     def validate_deadline(self, value: str) -> int:
         value = timezone.make_aware(value.replace(tzinfo=None), timezone.get_current_timezone())
